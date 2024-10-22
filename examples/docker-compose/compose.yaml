@@ -1,0 +1,38 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - ./grafana:/etc/grafana/provisioning
+      - ./grafana-dashboards:/etc/dashboards
+  power-datacenter-exporter:
+    image: marevers/power-datacenter-exporter:snapshot
+    container_name: power-datacenter-exporter
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    command:
+      - '--pdc.baseurl=http://power-datacenter.com'
+      - '--pdc.username=${PDC_USERNAME}'
+      - '--pdc.password=${PDC_PASSWORD}'
+      - '--pdc.serialnumber=${PDC_SERIALNUMBER}'
+      - '--pdc.interval=300'
+volumes:
+  prom_data:
