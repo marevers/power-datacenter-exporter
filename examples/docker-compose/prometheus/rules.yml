@@ -1,0 +1,31 @@
+groups:
+  - name: PDC
+    rules:
+      - alert: BatteryAlmostFull
+        expr: pdc_battery_capacity_percent >= 90
+        for: 0m
+        labels:
+          severity: informational
+        annotations:
+          summary: The battery has reached 90 % of its capacity.
+      - alert: BatteryLowVoltage
+        expr: pdc_battery_voltage <= 47
+        for: 10m
+        labels:
+          severity: informational
+        annotations:
+          summary: The battery voltage was below 47 V for the last 10 minutes.
+      - alert: Output1Overload
+        expr: pdc_output1_load_percent >= 100
+        for: 0m
+        labels:
+          severity: moderate
+        annotations:
+          summary: Output 1 is overloaded. Load is 100% or higher.
+      - alert: Output2Overload
+        expr: pdc_output2_load_percent >= 100
+        for: 0m
+        labels:
+          severity: moderate
+        annotations:
+          summary: Output 2 is overloaded. Load is 100% or higher.
