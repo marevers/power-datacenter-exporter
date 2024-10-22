@@ -51,6 +51,9 @@ type WorkInfo struct {
 	TotalAcOutputApparentPower float64 `json:"totalAcOutputApparentPower"`
 	TotalAcOutputActivePower   float64 `json:"totalAcOutputActivePower"`
 	ChargeSource               string  `json:"chargeSource"`
+	LoadSource                 string  `json:"loadSource"`
+	WorkMode                   string  `json:"workMode"`
+	MachineType                string  `json:"machineType"`
 	HasLoad1                   bool    `json:"hasLoad"`
 	HasLoad2                   bool    `json:"hasLoad2"`
 	ACchargeOn1                bool    `json:"ACchargeOn"`
@@ -60,9 +63,6 @@ type WorkInfo struct {
 	SCCchargeOn2               bool    `json:"SCCchargeOn2"`
 	LineLoss1                  bool    `json:"lineLoss"`
 	LineLoss2                  bool    `json:"lineLoss2"`
-	LoadSource                 string  `json:"loadSource"`
-	WorkMode                   string  `json:"workMode"`
-	MachineType                string  `json:"machineType"`
 	OverLoad                   bool    `json:"overLoad"`
 	Timestr                    string  `json:"timestr"`
 	DataID                     float64 `json:"dataID"`

@@ -15,6 +15,6 @@ rule_files:
 
 scrape_configs:
   - job_name: "pdc"
-    scrape_interval: 30s
+    scrape_interval: 5m
     static_configs:
       - targets: ["power-datacenter-exporter:8080"]

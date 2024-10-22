@@ -15,6 +15,12 @@ const (
 	// LabelSerialNumber represents the inverter serial number
 	LabelSerialNumber = "serialno"
 
+	// LabelSource represents the charge/load source
+	LabelSource = "source"
+
+	//LabelWorkMode represents work mode
+	LabelWorkMode = "mode"
+
 	// Namespace is the metrics prefix
 	Namespace = "pdc"
 )
@@ -23,6 +29,16 @@ var (
 	// Labels are the static labels that come with every metric
 	labels = []string{
 		LabelSerialNumber,
+	}
+
+	labelsSource = []string{
+		LabelSerialNumber,
+		LabelSource,
+	}
+
+	labelsWorkMode = []string{
+		LabelSerialNumber,
+		LabelWorkMode,
 	}
 )
 
@@ -62,6 +78,21 @@ type exporter struct {
 		TotalBatChgCurrentVec         *prometheus.GaugeVec
 		TotalAcOutputApparentPowerVec *prometheus.GaugeVec
 		TotalAcOutputActivePowerVec   *prometheus.GaugeVec
+
+		ChargeSourceVec *prometheus.GaugeVec
+		LoadSourceVec   *prometheus.GaugeVec
+		WorkModeVec     *prometheus.GaugeVec
+
+		HasLoad1Vec     *prometheus.GaugeVec
+		HasLoad2Vec     *prometheus.GaugeVec
+		ACChargeOn1Vec  *prometheus.GaugeVec
+		ACChargeOn2Vec  *prometheus.GaugeVec
+		ChargeOnVec     *prometheus.GaugeVec
+		SCCChargeOn1Vec *prometheus.GaugeVec
+		SCCChargeOn2Vec *prometheus.GaugeVec
+		LineLoss1Vec    *prometheus.GaugeVec
+		LineLoss2Vec    *prometheus.GaugeVec
+		OverloadVec     *prometheus.GaugeVec
 
 		ScrapeError prometheus.Gauge
 	}
@@ -253,6 +284,84 @@ func (e *exporter) registerMetrics(labels []string) {
 		Help:      "Total AC output active power in watts",
 	}, labels)
 
+	// Charge / Load source
+
+	e.Metrics.ChargeSourceVec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "charge_source",
+		Namespace: Namespace,
+		Help:      "Charge source",
+	}, labelsSource)
+
+	e.Metrics.LoadSourceVec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "load_source",
+		Namespace: Namespace,
+		Help:      "Load source",
+	}, labelsSource)
+
+	// Work mode
+
+	e.Metrics.WorkModeVec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "work_mode",
+		Namespace: Namespace,
+		Help:      "Work mode",
+	}, labelsWorkMode)
+
+	// Boolean statuses
+
+	e.Metrics.HasLoad1Vec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "hasload1",
+		Namespace: Namespace,
+		Help:      "Returns 1 if output 1 has load",
+	}, labels)
+
+	e.Metrics.HasLoad2Vec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "hasload2",
+		Namespace: Namespace,
+		Help:      "Returns 1 if output 2 has load",
+	}, labels)
+
+	e.Metrics.ACChargeOn1Vec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "acchargeon1",
+		Namespace: Namespace,
+		Help:      "Returns 1 if line 1 is being charged with utility power",
+	}, labels)
+
+	e.Metrics.ACChargeOn2Vec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "acchargeon2",
+		Namespace: Namespace,
+		Help:      "Returns 1 if line 2 is being charged with utility power",
+	}, labels)
+
+	e.Metrics.SCCChargeOn1Vec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "sccchargeon1",
+		Namespace: Namespace,
+		Help:      "Returns 1 if line 1 is being charged with solar power",
+	}, labels)
+
+	e.Metrics.SCCChargeOn2Vec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "sccchargeon2",
+		Namespace: Namespace,
+		Help:      "Returns 1 if line 2 is being charged with solar power",
+	}, labels)
+
+	e.Metrics.LineLoss1Vec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "lineloss1",
+		Namespace: Namespace,
+		Help:      "Returns 1 if utility line 1 is offline",
+	}, labels)
+
+	e.Metrics.LineLoss2Vec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "lineloss2",
+		Namespace: Namespace,
+		Help:      "Returns 1 if utility line 2 is offline",
+	}, labels)
+
+	e.Metrics.OverloadVec = promauto.With(e.Reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "overload",
+		Namespace: Namespace,
+		Help:      "Returns 1 if system is overloaded",
+	}, labels)
+
 	// Scrape error
 
 	e.Metrics.ScrapeError = promauto.With(e.Reg).NewGauge(prometheus.GaugeOpts{
@@ -260,6 +369,14 @@ func (e *exporter) registerMetrics(labels []string) {
 		Namespace: Namespace,
 		Help:      "Returns 1 if the last scrape failed",
 	})
+}
+
+func convertBoolToFloat(b bool) float64 {
+	if b {
+		return 1.0
+	}
+
+	return 0.0
 }
 
 func (e *exporter) calculateMetrics() error {
@@ -279,6 +396,8 @@ func (e *exporter) calculateMetrics() error {
 		labelValues,
 		e.Session.SerialNumber,
 	)
+
+	// Standard metrics
 
 	e.Metrics.GridFrequency1Vec.WithLabelValues(labelValues...).Set(e.Session.WorkInfo.GridFrequency1)
 	e.Metrics.GridFrequency2Vec.WithLabelValues(labelValues...).Set(e.Session.WorkInfo.GridFrequency2)
@@ -312,6 +431,41 @@ func (e *exporter) calculateMetrics() error {
 	e.Metrics.TotalBatChgCurrentVec.WithLabelValues(labelValues...).Set(e.Session.WorkInfo.TotalBatChgCurrent)
 	e.Metrics.TotalAcOutputApparentPowerVec.WithLabelValues(labelValues...).Set(e.Session.WorkInfo.TotalAcOutputApparentPower)
 	e.Metrics.TotalAcOutputActivePowerVec.WithLabelValues(labelValues...).Set(e.Session.WorkInfo.TotalAcOutputActivePower)
+
+	// Named statuses
+
+	var labelValuesChargeSource []string = append(
+		labelValues,
+		e.Session.WorkInfo.ChargeSource,
+	)
+
+	e.Metrics.ChargeSourceVec.WithLabelValues(labelValuesChargeSource...)
+
+	var labelValuesLoadSource []string = append(
+		labelValues,
+		e.Session.WorkInfo.LoadSource,
+	)
+
+	e.Metrics.LoadSourceVec.WithLabelValues(labelValuesLoadSource...)
+
+	var labelValuesWorkMode []string = append(
+		labelValues,
+		e.Session.WorkInfo.WorkMode,
+	)
+
+	e.Metrics.WorkModeVec.WithLabelValues(labelValuesWorkMode...)
+
+	// Boolean statuses
+
+	e.Metrics.HasLoad1Vec.WithLabelValues(labelValues...).Set(convertBoolToFloat(e.Session.WorkInfo.HasLoad1))
+	e.Metrics.HasLoad2Vec.WithLabelValues(labelValues...).Set(convertBoolToFloat(e.Session.WorkInfo.HasLoad2))
+	e.Metrics.ACChargeOn1Vec.WithLabelValues(labelValues...).Set(convertBoolToFloat(e.Session.WorkInfo.ACchargeOn1))
+	e.Metrics.ACChargeOn2Vec.WithLabelValues(labelValues...).Set(convertBoolToFloat(e.Session.WorkInfo.ACchargeOn2))
+	e.Metrics.SCCChargeOn1Vec.WithLabelValues(labelValues...).Set(convertBoolToFloat(e.Session.WorkInfo.SCCchargeOn1))
+	e.Metrics.SCCChargeOn2Vec.WithLabelValues(labelValues...).Set(convertBoolToFloat(e.Session.WorkInfo.SCCchargeOn2))
+	e.Metrics.LineLoss1Vec.WithLabelValues(labelValues...).Set(convertBoolToFloat(e.Session.WorkInfo.LineLoss1))
+	e.Metrics.LineLoss2Vec.WithLabelValues(labelValues...).Set(convertBoolToFloat(e.Session.WorkInfo.LineLoss2))
+	e.Metrics.OverloadVec.WithLabelValues(labelValues...).Set(convertBoolToFloat(e.Session.WorkInfo.OverLoad))
 
 	return nil
 }
