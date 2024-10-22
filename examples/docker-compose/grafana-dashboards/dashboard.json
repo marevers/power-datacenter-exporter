@@ -719,7 +719,7 @@
         "legend": {
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "mergeValues": true,
         "rowHeight": 0.9,
@@ -1111,18 +1111,30 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "text",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Capacity"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "text",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -1221,7 +1233,23 @@
           },
           "unit": "volt"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Voltage"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "text",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -1320,7 +1348,38 @@
           },
           "unit": "amp"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Charge Current"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Discharge Current"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -1710,6 +1769,36 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Grid 1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Grid 2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -1755,7 +1844,7 @@
           "expr": "pdc_grid2_voltage",
           "hide": false,
           "instant": false,
-          "legendFormat": "Grid2",
+          "legendFormat": "Grid 2",
           "range": true,
           "refId": "B"
         }
@@ -1853,6 +1942,36 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Grid 1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Grid 2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -1885,7 +2004,7 @@
           "editorMode": "code",
           "expr": "pdc_grid1_frequency",
           "instant": false,
-          "legendFormat": "Grid1",
+          "legendFormat": "Grid 1",
           "range": true,
           "refId": "A"
         },
@@ -1898,7 +2017,7 @@
           "expr": "pdc_grid2_frequency",
           "hide": false,
           "instant": false,
-          "legendFormat": "Grid2",
+          "legendFormat": "Grid 2",
           "range": true,
           "refId": "B"
         }
@@ -2009,6 +2128,36 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -2041,7 +2190,7 @@
           "editorMode": "code",
           "expr": "pdc_acoutput1_voltage",
           "instant": false,
-          "legendFormat": "Output1",
+          "legendFormat": "Output 1",
           "range": true,
           "refId": "A"
         },
@@ -2054,7 +2203,7 @@
           "expr": "pdc_acoutput2_voltage",
           "hide": false,
           "instant": false,
-          "legendFormat": "Output2",
+          "legendFormat": "Output 2",
           "range": true,
           "refId": "B"
         }
@@ -2152,6 +2301,36 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -2184,7 +2363,7 @@
           "editorMode": "code",
           "expr": "pdc_acoutput1_frequency",
           "instant": false,
-          "legendFormat": "Output1",
+          "legendFormat": "Output 1",
           "range": true,
           "refId": "A"
         },
@@ -2197,7 +2376,7 @@
           "expr": "pdc_acoutput2_frequency",
           "hide": false,
           "instant": false,
-          "legendFormat": "Output2",
+          "legendFormat": "Output 2",
           "range": true,
           "refId": "B"
         }
@@ -2295,6 +2474,36 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -2327,7 +2536,7 @@
           "editorMode": "code",
           "expr": "pdc_acoutput1_apparent_power",
           "instant": false,
-          "legendFormat": "Output1",
+          "legendFormat": "Output 1",
           "range": true,
           "refId": "A"
         },
@@ -2340,7 +2549,7 @@
           "expr": "pdc_acoutput2_apparent_power",
           "hide": false,
           "instant": false,
-          "legendFormat": "Output2",
+          "legendFormat": "Output 2",
           "range": true,
           "refId": "B"
         }
@@ -2438,6 +2647,36 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -2470,7 +2709,7 @@
           "editorMode": "code",
           "expr": "pdc_acoutput1_active_power",
           "instant": false,
-          "legendFormat": "Output1",
+          "legendFormat": "Output 1",
           "range": true,
           "refId": "A"
         },
@@ -2483,7 +2722,7 @@
           "expr": "pdc_acoutput2_active_power",
           "hide": false,
           "instant": false,
-          "legendFormat": "Output2",
+          "legendFormat": "Output 2",
           "range": true,
           "refId": "B"
         }
@@ -2581,6 +2820,36 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output 2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -2613,7 +2882,7 @@
           "editorMode": "code",
           "expr": "pdc_output1_load_percent",
           "instant": false,
-          "legendFormat": "Output1",
+          "legendFormat": "Output 1",
           "range": true,
           "refId": "A"
         },
@@ -2626,7 +2895,7 @@
           "expr": "pdc_output2_load_percent",
           "hide": false,
           "instant": false,
-          "legendFormat": "Output2",
+          "legendFormat": "Output 2",
           "range": true,
           "refId": "B"
         }
@@ -2649,6 +2918,6 @@
   "timezone": "browser",
   "title": "PDC",
   "uid": "de1kuhh2s7shse",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
