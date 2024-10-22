@@ -439,21 +439,24 @@ func (e *exporter) calculateMetrics() error {
 		e.Session.WorkInfo.ChargeSource,
 	)
 
-	e.Metrics.ChargeSourceVec.WithLabelValues(labelValuesChargeSource...)
+	e.Metrics.ChargeSourceVec.Reset()
+	e.Metrics.ChargeSourceVec.WithLabelValues(labelValuesChargeSource...).Set(1)
 
 	var labelValuesLoadSource []string = append(
 		labelValues,
 		e.Session.WorkInfo.LoadSource,
 	)
 
-	e.Metrics.LoadSourceVec.WithLabelValues(labelValuesLoadSource...)
+	e.Metrics.LoadSourceVec.Reset()
+	e.Metrics.LoadSourceVec.WithLabelValues(labelValuesLoadSource...).Set(1)
 
 	var labelValuesWorkMode []string = append(
 		labelValues,
 		e.Session.WorkInfo.WorkMode,
 	)
 
-	e.Metrics.WorkModeVec.WithLabelValues(labelValuesWorkMode...)
+	e.Metrics.WorkModeVec.Reset()
+	e.Metrics.WorkModeVec.WithLabelValues(labelValuesWorkMode...).Set(1)
 
 	// Boolean statuses
 
